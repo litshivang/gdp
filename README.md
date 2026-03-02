@@ -28,8 +28,8 @@ FastAPI / Python Client
 
 ### 1. Clone repo
 ```bash
-git clone https://github.com/litshivang/gas-data-pipeline.git
-cd gas-data-pipeline
+git clone https://github.com/litshivang/gdp.git
+cd gdp
 ```
 
 ### 2. Create virtual environment
