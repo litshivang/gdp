@@ -28,7 +28,7 @@ FastAPI / Python Client
 
 ### 1. Clone repo
 ```bash
-git clone https://github.com/litshivang/gas-data-pipeline.git
+git clone https://github.com/litshivang/gdp.git
 cd gas-data-pipeline
 ```
 
