@@ -12,7 +12,7 @@ router = APIRouter(prefix="/v2/ingest", tags=["Ingestion"])
 _orchestrator = Orchestrator(registry)
 
 
-@router.post("/gas")
+@router.post("/gas", summary="National Gas Quality")
 def ingest_gas_quality(
     background_tasks: BackgroundTasks,
     from_date: str = Query(..., description="YYYY-MM-DD"),
@@ -88,7 +88,7 @@ def ingest_entsog(
     }
 
 
-@router.post("/instantaneous")
+@router.post("/instantaneous", summary="National Gas Instantaneous Flow")
 def ingest_instantaneous_flow(background_tasks: BackgroundTasks):
 
     background_tasks.add_task(
@@ -131,7 +131,7 @@ def get_publication_catalogue():
     return publications
 
 
-@router.post("/gas-publications")
+@router.post("/gas-publications", summary="National Gas Operational Data")
 def ingest_gas_publications(
     background_tasks: BackgroundTasks,
     from_date: str = Query(..., example="2024-03-01"),
