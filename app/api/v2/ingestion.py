@@ -5,6 +5,9 @@ from app.ingestion.core import registry, Orchestrator
 import app.ingestion.adapters  # noqa: F401 — register GAS_QUALITY adapter
 from datetime import datetime
 from typing import List, Optional
+import requests
+
+
 router = APIRouter(prefix="/v2/ingest", tags=["Ingestion"])
 _orchestrator = Orchestrator(registry)
 
@@ -150,4 +153,68 @@ def ingest_gas_publications(
     return {
         "status": "accepted",
         "dataset": "GAS_PUBLICATIONS"
+    }
+
+# BMRS
+
+@router.post("/bmrs-fuelhh")
+def ingest_bmrs_fuelhh(
+    background_tasks: BackgroundTasks,
+    from_date: Optional[str] = Query(None),
+    to_date: Optional[str] = Query(None),
+    fuel_types: Optional[List[str]] = Query(None),
+    settlement_date: Optional[str] = Query(None),
+    settlement_period: Optional[int] = Query(None),
+):
+
+    background_tasks.add_task(
+        _orchestrator.run,
+        "FUELHH",
+        from_date=from_date,
+        to_date=to_date,
+        fuel_types=fuel_types,
+        settlement_date=settlement_date,
+        settlement_period=settlement_period,
+    )
+
+    return {
+        "status": "accepted",
+        "dataset": "FUELHH",
+        "filters": {
+            "from": from_date,
+            "to": to_date,
+            "fuel_types": fuel_types,
+            "settlement_date": settlement_date,
+            "settlement_period": settlement_period,
+        }
+    }
+    
+
+@router.post("/bmrs-demand")
+def ingest_bmrs_demand(
+    background_tasks: BackgroundTasks,
+    from_date: Optional[str] = Query(None),
+    to_date: Optional[str] = Query(None),
+    settlement_date: Optional[str] = Query(None),
+    settlement_period: Optional[int] = Query(None),
+):
+
+    background_tasks.add_task(
+        _orchestrator.run,
+        "DEMAND_OUTTURN",
+        from_date=from_date,
+        to_date=to_date,
+        settlement_date=settlement_date,
+        settlement_period=settlement_period,
+    )
+
+    return {
+        "status": "accepted",
+        "dataset": "DEMAND_OUTTURN",
+        "filters": {
+            "from": from_date,
+            "to": to_date,
+            "settlement_date": settlement_date,
+            "settlement_period": settlement_period,
+        }
     }
