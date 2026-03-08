@@ -19,7 +19,7 @@ def ingest_alsi(country: str | None = None):
     _orchestrator.run("ALSI", country=country)
     return {"status": "completed", "dataset": "ALSI", "country": country}
 
-@router.get("/data")
+@router.get("/gie-data")
 def get_gie_data(
     source: str,
     country: str | None = None,
