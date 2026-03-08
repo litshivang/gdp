@@ -1,6 +1,5 @@
 """
 National Gas adapter — GAS_QUALITY dataset only.
-Logic copied from national_gas_client + transformer + series_autoregister; no changes.
 """
 
 import time
