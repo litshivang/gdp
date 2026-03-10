@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Query
 from sqlalchemy import text
 from app.db.connection import engine
+from app.utils.swagger_helper import SwaggerHelper
+
 
 router = APIRouter(prefix="/v2/discovery", tags=["Discovery"])
 
 
-@router.get("/datasets")
+@router.get("/datasets", **SwaggerHelper.DATASETS)
 def list_datasets():
     with engine.connect() as conn:
         rows = conn.execute(
@@ -14,7 +16,7 @@ def list_datasets():
     return [r[0] for r in rows]
 
 
-@router.get("/fields")
+@router.get("/fields", **SwaggerHelper.FIELDS)
 def list_fields(dataset_id: str):
     with engine.connect() as conn:
         rows = conn.execute(
@@ -38,7 +40,7 @@ def list_fields(dataset_id: str):
     ]
 
 
-@router.get("/sample")
+@router.get("/sample", **SwaggerHelper.SAMPLE)
 def sample_data(dataset_id: str, limit: int = Query(5, le=50)):
     with engine.connect() as conn:
         rows = conn.execute(
@@ -56,7 +58,7 @@ def sample_data(dataset_id: str, limit: int = Query(5, le=50)):
 
 
 
-@router.get("/raw")
+@router.get("/raw", **SwaggerHelper.RAW)
 def raw_preview(
     dataset_id: str,
     limit: int = Query(20, ge=1, le=500),

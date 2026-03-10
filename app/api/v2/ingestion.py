@@ -2,17 +2,16 @@ from fastapi import APIRouter, Query, HTTPException, BackgroundTasks
 from app.ingestion.national_gas_client import NationalGasClient
 from app.ingestion.run_all import ingest_dataset
 from app.ingestion.core import registry, Orchestrator
-import app.ingestion.adapters  # noqa: F401 — register GAS_QUALITY adapter
 from datetime import datetime
 from typing import List, Optional
-import requests
+from app.utils.swagger_helper import SwaggerHelper
 
 
 router = APIRouter(prefix="/v2/ingest", tags=["Ingestion"])
 _orchestrator = Orchestrator(registry)
 
 
-@router.post("/gas", summary="National Gas Quality")
+@router.post("/gas", **SwaggerHelper.GAS_QUALITY)
 def ingest_gas_quality(
     background_tasks: BackgroundTasks,
     from_date: str = Query(..., description="YYYY-MM-DD"),
@@ -52,7 +51,7 @@ def ingest_gas_quality(
     }
 
 
-@router.post("/entsog")
+@router.post("/entsog", **SwaggerHelper.ENTSOG)
 def ingest_entsog(
     background_tasks: BackgroundTasks,
     from_date: str = Query(...),
@@ -88,7 +87,7 @@ def ingest_entsog(
     }
 
 
-@router.post("/instantaneous", summary="National Gas Instantaneous Flow")
+@router.post("/instantaneous", **SwaggerHelper.INSTANTANEOUS_FLOW)
 def ingest_instantaneous_flow(background_tasks: BackgroundTasks):
 
     background_tasks.add_task(
@@ -102,7 +101,7 @@ def ingest_instantaneous_flow(background_tasks: BackgroundTasks):
     }
 
 
-@router.get("/publication-catalogue")
+@router.get("/publication-catalogue", **SwaggerHelper.PUBLICATION_CATALOGUE)
 def get_publication_catalogue():
     """
     Returns simplified publication list for Swagger usability.
@@ -131,7 +130,7 @@ def get_publication_catalogue():
     return publications
 
 
-@router.post("/gas-publications", summary="National Gas Operational Data")
+@router.post("/gas-publications", **SwaggerHelper.GAS_PUBLICATIONS)
 def ingest_gas_publications(
     background_tasks: BackgroundTasks,
     from_date: str = Query(..., example="2024-03-01"),
@@ -157,7 +156,7 @@ def ingest_gas_publications(
 
 # BMRS
 
-@router.post("/bmrs-fuelhh")
+@router.post("/bmrs-fuelhh", **SwaggerHelper.BMRS_FUELHH)
 def ingest_bmrs_fuelhh(
     background_tasks: BackgroundTasks,
     from_date: Optional[str] = Query(None),
@@ -190,7 +189,7 @@ def ingest_bmrs_fuelhh(
     }
     
 
-@router.post("/bmrs-demand")
+@router.post("/bmrs-demand", **SwaggerHelper.BMRS_DEMAND)
 def ingest_bmrs_demand(
     background_tasks: BackgroundTasks,
     from_date: Optional[str] = Query(None),

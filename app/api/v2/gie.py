@@ -2,24 +2,24 @@ from fastapi import APIRouter, Query
 from sqlalchemy import text
 from app.db.connection import engine
 from app.ingestion.core import registry, Orchestrator
-import app.ingestion.adapters  # noqa: F401 — register adapters
+from app.utils.swagger_helper import SwaggerHelper  
 
 router = APIRouter(prefix="/v2/gie", tags=["GIE"])
 _orchestrator = Orchestrator(registry)
 
 
-@router.post("/agsi")
+@router.post("/agsi", **SwaggerHelper.AGSI)
 def ingest_agsi(country: str | None = None):
     _orchestrator.run("AGSI", country=country)
     return {"status": "completed", "dataset": "AGSI", "country": country}
 
 
-@router.post("/alsi")
+@router.post("/alsi", **SwaggerHelper.ALSI)
 def ingest_alsi(country: str | None = None):
     _orchestrator.run("ALSI", country=country)
     return {"status": "completed", "dataset": "ALSI", "country": country}
 
-@router.get("/gie-data")
+@router.get("/gie-data", **SwaggerHelper.GIE_DATA)
 def get_gie_data(
     source: str,
     country: str | None = None,

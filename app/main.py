@@ -8,9 +8,9 @@ from app.api.v2.gie import router as gie_router
 
 
 app = FastAPI(
-    title="Gas Data Platform",
+    title="Welcome to Gas Data Analytics",
     version="0.1.0",
-    description="Read-only API for National Gas data"
+    description="Unified Gas and Electricity Market Data Ingestion and Analytics"
 )
 
 app.include_router(health.router)
